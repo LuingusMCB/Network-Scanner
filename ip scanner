@@ -1,1 +1,5 @@
+import ipaddress
+import socket
 
+hostname = socket.gethostname()
+IPAddr = socket.gethostbyname(hostname)
