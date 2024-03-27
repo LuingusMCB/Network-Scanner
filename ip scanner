@@ -1,5 +1,78 @@
-import ipaddress
+import os
 import socket
+import ipaddress
+import pprint
 
-hostname = socket.gethostname()
-IPAddr = socket.gethostbyname(hostname)
+
+f = open('getting_network', 'w')
+f.write(str(os.popen('ipconfig').readlines()))
+f.close
+
+f = open('getting_network', 'r')
+content = f.readlines()
+w = str(content).split(". ")
+f.close()
+
+first = "."
+
+f = open('getting_network', 'w')
+for i in w:
+    if i != 'W':
+        f.write(i)
+        f.write('\n')
+f.close()
+
+f = open('getting_network', 'r')
+content = f.readlines()
+f.close() 
+
+f = open('getting_network', 'w')
+for line in content:
+    if  first in line:
+        f.write(line)
+f.close()
+
+
+f = open('getting_network', 'r+')
+for line in f:
+    part = line.split("\\")
+    f.write(part[0])
+    f.write('\n')
+    
+f.close()
+
+f = open('getting_network', 'r')
+content = f.readlines()
+print(content)
+f.close()
+
+first = "n"
+
+f = open('getting_network', 'w')
+for line in content:
+    if first in line:
+        print("they're gone")
+    else:
+        f.write(line)
+f.close()
+
+f = open('getting_network', 'r+')
+for line in f:
+    part = line.split(' ')
+    f.write(part[1])
+f.close()
+
+f = open('getting_network', 'r')
+content = f.readlines()
+print(content)
+f.close()
+
+first = ":"
+
+f = open('getting_network', 'w')
+for line in content:
+    if first in line:
+        print("they're gone")
+    else:
+        f.write(line)
+f.close()
