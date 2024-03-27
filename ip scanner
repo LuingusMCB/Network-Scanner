@@ -2,18 +2,18 @@ import os
 import socket
 import ipaddress
 import pprint
+import time
 
 
 f = open('getting_network', 'w')
 f.write(str(os.popen('ipconfig').readlines()))
 f.close
+print('Optaining network information')
 
 f = open('getting_network', 'r')
 content = f.readlines()
 w = str(content).split(". ")
 f.close()
-
-first = "."
 
 f = open('getting_network', 'w')
 for i in w:
@@ -21,29 +21,34 @@ for i in w:
         f.write(i)
         f.write('\n')
 f.close()
+time.sleep(1)
+print('cutting the network information')
 
 f = open('getting_network', 'r')
 content = f.readlines()
 f.close() 
+
+first = "."
 
 f = open('getting_network', 'w')
 for line in content:
     if  first in line:
         f.write(line)
 f.close()
-
+time.sleep(1)
+print('sliming the information')
 
 f = open('getting_network', 'r+')
 for line in f:
     part = line.split("\\")
     f.write(part[0])
     f.write('\n')
-    
 f.close()
+time.sleep(1)
+print('Just a little more sliming')
 
 f = open('getting_network', 'r')
 content = f.readlines()
-print(content)
 f.close()
 
 first = "n"
@@ -51,20 +56,23 @@ first = "n"
 f = open('getting_network', 'w')
 for line in content:
     if first in line:
-        print("they're gone")
+        temp = 1
     else:
         f.write(line)
 f.close()
+time.sleep(1)
+print('Almost done')
 
 f = open('getting_network', 'r+')
 for line in f:
     part = line.split(' ')
     f.write(part[1])
 f.close()
+time.sleep(1)
+print('finishing up')
 
 f = open('getting_network', 'r')
 content = f.readlines()
-print(content)
 f.close()
 
 first = ":"
@@ -72,7 +80,26 @@ first = ":"
 f = open('getting_network', 'w')
 for line in content:
     if first in line:
-        print("they're gone")
+        temp =1 
     else:
         f.write(line)
 f.close()
+time.sleep(1)
+print('one last thing')
+
+f = open('getting_network', 'r')
+network = f.readlines()
+f.close()
+
+wow = network.pop(2)
+part = wow.split('.')
+wow = [part[0], part[1], part[2], '0']
+cool = '.'.join(wow)
+network.append(cool)
+
+f = open('getting_network', 'w')
+for i in network:
+    f.write(i)
+f.close()
+time.sleep(1)
+print('network information optained and organised')
