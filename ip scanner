@@ -91,7 +91,7 @@ f = open('getting_network', 'r')
 network = f.readlines()
 f.close()
 
-wow = network.pop(2)
+wow = network.pop()
 part = wow.split('.')
 wow = [part[0], part[1], part[2], '0']
 cool = '.'.join(wow)
