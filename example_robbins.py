@@ -2,7 +2,9 @@ import os
 import json
 import ipaddress
 import socket
+import sys
 from pathlib import Path
+import concurrent.futures
 from pprint import pprint
 
 def get_ip_info():
@@ -34,14 +36,42 @@ def build_host_list(network):
         hosts.append(str(host))
     return hosts
 
+def check_port(host, port):
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(1)
+            s.connect((host, port))
+            sys.stdout.flush()
+            sys.stdout.write(f'{host} --> {port} is open' + '\n')
+            sys.stdout.flush()
+            return port
+    except:
+        return None
+
 def check_open_ports(host):
+    open_ports = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
+        future_to_port = {executor.submit(check_port, host, port): port for port in range(10000, 40000)}
+        for future in concurrent.futures.as_completed(future_to_port):
+            port = future_to_port[future]
+            try:
+                data = future.result()
+                if data is not None:
+                    open_ports.append(data)
+            except Exception as exc:
+                sys.stdout.flush()
+                sys.stdout.write(f'Port {port} generated an exception: {exc}' + '\n')
+                sys.stdout.flush()
+    return open_ports
+
+def check_open_ports_orig(host):
     open_ports = []
     for port in range(10000, 40000):
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.settimeout(1)
                 s.connect((host, port))
-                print(f'{host} --> {port} is open')
+                sys.stdout.write(f'{host} --> {port} is open' + '\n')
                 open_ports.append(port)
         except:
             pass
