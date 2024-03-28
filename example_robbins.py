@@ -6,6 +6,8 @@ import sys
 from pathlib import Path
 import concurrent.futures
 from pprint import pprint
+import time
+import threading
 
 def get_ip_info():
     ret_val = None
@@ -100,7 +102,42 @@ def main():
         if host_is_alive(host):
             open_ports = check_open_ports(host)
             for port in open_ports:
-                print(f'{host} --> {port}')
+                try:
+                    socket_instance = socket.socket()
+                    socket_instance.connect((host, port))
+                    threading.Thread(target=handle_messages, args=[socket_instance]).start()
+                    print('Connected to chat!')
+                    while True:
+                        msg = input()
+
+                        if msg == 'quit':
+                            break
+
+                        if msg == 'spam':
+                            while True:
+                                time.sleep(1)
+                                msg = 'Hello'
+
+                        socket_instance.send(msg.encode())
+                    socket_instance.close()
+                except Exception as e:
+                    print(f'Error connecting to server socket {e}')
+                    socket_instance.close()
+                    break
+
+def handle_messages(connection: socket.socket):
+    while True:
+        try:
+            msg = connection.recv(1024)
+            if msg:
+                print(msg.decode())
+            else:
+                connection.close()
+                break
+        except Exception as e:
+            print(f'Error handling message from server: {e}')
+            connection.close()
+            break
 
 if __name__ == '__main__':
     main()
